@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+      var BASE_URL = "http://localhost:3000/";
+      $(document).ready(function() {
+        $('div').on('click', 'a', function() {
+          var id = $(this).attr('id');
+          var like_count = Number($(this).html().split(' ').pop());
+          $.ajax({
+            method: "PUT",
+            url: BASE_URL + "companies/" + id,
+            data: {like: like_count + 1},
+            success: function(data) {
+              console.log(data);
+            }
+
+          })
+        });
+        $.ajax({
+
+          method: "GET",
+          url: BASE_URL,
+          success: function(data) {
+            // console.log(data);
+
+            for(var i = 0; i < data.length; i++) {
+              var name = data[i].name;
+              var likes = data[i].like;
+              $('#app').append("<div><h1>" + name + " <a id='" + data[i].id + "'>LIKES: " + likes + "</a></h1></div>")
+              for (var j = 0; j < data[i].products.length; j++) {
+                var product = data[i].products[j].product;
+                // console.log(product.product)
+                if (j < data[i].products.length - 1) {
+                  $('#app').append(product + ', ');
+                }
+                else {
+                  $('#app').append(product);
+                }
+              }
+              $('#app div').hide();
+              $("#app div").each(function(index) {
+                $(this).delay(50*index).fadeIn(1000);
+              });
+            };
+          }
+        });
+      })
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
